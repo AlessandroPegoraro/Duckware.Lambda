@@ -1,4 +1,4 @@
-package com.amazonaws.lambda.deleteworkflow;
+package com.amazonaws.lambda.changepassword;
 
 import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
@@ -7,16 +7,15 @@ import com.amazonaws.services.dynamodbv2.document.DynamoDB;
 import com.amazonaws.services.dynamodbv2.document.Item;
 import com.amazonaws.services.dynamodbv2.document.Table;
 import com.amazonaws.services.dynamodbv2.document.spec.UpdateItemSpec;
+import com.amazonaws.services.dynamodbv2.document.utils.ValueMap;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
-import java.util.Map;
-import java.util.List;
 
 public class LambdaFunctionHandler implements RequestHandler<Workflow, Response> {
 
     @Override
     public Response handleRequest(Workflow input, Context context) {
-    	AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard()
+        AmazonDynamoDB client = AmazonDynamoDBClientBuilder.standard()
                 .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("https://dynamodb.eu-west-1.amazonaws.com", "eu-west-1"))
                 .build();
         DynamoDB dynamoDB = new DynamoDB(client);
@@ -24,22 +23,18 @@ public class LambdaFunctionHandler implements RequestHandler<Workflow, Response>
         Table table = dynamoDB.getTable(tableName);
         Item checkPresence = null;
     	checkPresence = table.getItem("UserID",input.getUsername());
-    	if(checkPresence != null && checkPresence.get("Password").toString().equals(input.getPassword()) && input.getWorkflowIndex() != null && !input.getWorkflowIndex().isEmpty() && Integer.parseInt(input.getWorkflowIndex())>=0) {
-    		List<Map<String,String>> listlength = null;
-    		listlength = checkPresence.getList("Workflow");
-    		if(listlength == null || Integer.parseInt(input.getWorkflowIndex())>=listlength.size()) {
-    			return new Response(500);
-    		}else {
-    			UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey("UserID", input.getUsername())
-    					.withUpdateExpression("REMOVE Workflow["+input.getWorkflowIndex()+"]");
-    			try {
-    				table.updateItem(updateItemSpec);
-    				return new Response(200);
-    			}catch(Exception e) {
-    				return new Response(500);
-    			}
-    		}
-    	}
-    	return new Response(500);
+    	if(checkPresence != null && checkPresence.get("Password").toString().equals(input.getPassword()) && input.getNewPassword() != null && !input.getNewPassword().isEmpty()) {
+    		UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey("UserID", input.getUsername())
+					.withUpdateExpression("set Password = :wf") 
+					.withValueMap(new ValueMap().with(":wf", input.getNewPassword()));
+			try {
+				table.updateItem(updateItemSpec);
+				return new Response(200);
+			}catch(Exception e) {
+				return new Response(500);
+			}
+    	}        
+        return new Response(500);
     }
+
 }

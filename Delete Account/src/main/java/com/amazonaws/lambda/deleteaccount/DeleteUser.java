@@ -1,9 +1,8 @@
-package com.amazonaws.lambda.deleteworkflow;
+package com.amazonaws.lambda.deleteaccount;
 
-public class Workflow {
+public class DeleteUser {
 	private String username;
     private String password;
-    private String workflowIndex;
     
 	public String getUsername() {
         return username;
@@ -21,22 +20,12 @@ public class Workflow {
         this.password=password;
     }
 	
-	public String getWorkflowIndex() {
-        return workflowIndex;
-    }
-	
-	public void setWorkflowIndex(String workflowIndex) {
-        this.workflowIndex=workflowIndex;
-    }
-	
-    public Workflow(String username, String password, String workflowIndex) {
+    public DeleteUser(String username, String password) {
         this.username = username;
         this.password = password;
-        this.workflowIndex = workflowIndex;
     }
     
-    public Workflow() {
+    public DeleteUser() {
     	
     }
-	
 }

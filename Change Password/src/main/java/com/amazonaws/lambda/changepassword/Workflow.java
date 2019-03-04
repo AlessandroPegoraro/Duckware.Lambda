@@ -1,9 +1,9 @@
-package com.amazonaws.lambda.deleteworkflow;
+package com.amazonaws.lambda.changepassword;
 
 public class Workflow {
 	private String username;
     private String password;
-    private String workflowIndex;
+    private String newPassword;
     
 	public String getUsername() {
         return username;
@@ -21,18 +21,18 @@ public class Workflow {
         this.password=password;
     }
 	
-	public String getWorkflowIndex() {
-        return workflowIndex;
+	public String getNewPassword() {
+        return newPassword;
     }
 	
-	public void setWorkflowIndex(String workflowIndex) {
-        this.workflowIndex=workflowIndex;
+	public void setNewPassword(String newPassword) {
+        this.newPassword=newPassword;
     }
 	
-    public Workflow(String username, String password, String workflowIndex) {
+    public Workflow(String username, String password, String newPassword) {
         this.username = username;
         this.password = password;
-        this.workflowIndex = workflowIndex;
+        this.newPassword = newPassword;
     }
     
     public Workflow() {

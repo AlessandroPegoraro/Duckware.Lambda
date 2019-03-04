@@ -2,7 +2,6 @@ package com.amazonaws.lambda.addworkflow;
 
 import com.amazonaws.lambda.addworkflow.Workflow;
 import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.lambda.addworkflow.Response;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.document.DynamoDB;
@@ -35,12 +34,12 @@ public class LambdaFunctionHandler implements RequestHandler<Workflow, Response>
         }catch(Exception e) {
         	return new Response(500);
         }
-        if(input.getWorkflowID().isEmpty() || input.getWorkflowID()==null || input.getWorkflowDefinition().isEmpty() || input.getWorkflowDefinition()==null || input.getWorkflowIndex()<0 || input.getWorkflowIndex()==null) {
+        if(input.getWorkflowID().isEmpty() || !checkPresence.get("Password").toString().equals(input.getPassword()) || input.getWorkflowID()==null || input.getWorkflowDefinition().isEmpty() || input.getWorkflowDefinition()==null || Integer.parseInt(input.getWorkflowIndex())<0 || input.getWorkflowIndex()==null || input.getWorkflowIndex().isEmpty()) {
         	return new Response(500);
         }
         List<Map<String,String>> listlength = null;
 		listlength = checkPresence.getList("Workflow");
-		if(listlength == null || input.getWorkflowIndex()>listlength.size()) {
+		if(listlength == null || Integer.parseInt(input.getWorkflowIndex())>listlength.size()) {
 			return new Response(500);
 		}else {
 			Map<String,String> addWF = new HashMap<>();
@@ -50,12 +49,11 @@ public class LambdaFunctionHandler implements RequestHandler<Workflow, Response>
 			UpdateItemSpec updateItemSpec = new UpdateItemSpec().withPrimaryKey("UserID", input.getUsername())
 					.withUpdateExpression("set Workflow["+input.getWorkflowIndex()+"] = :wf")
 					.withValueMap(new ValueMap().with(":wf", addWF));
-
 			try {
 				table.updateItem(updateItemSpec);
 				return new Response(200);
 			}
-			catch (Exception e) {        	
+			catch (Exception e) {  
 				return new Response(500);
 			}
 		}

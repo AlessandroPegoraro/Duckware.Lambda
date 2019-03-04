@@ -5,7 +5,7 @@ public class Workflow {
     private String password;
     private String workflowID;
     private String workflowDefinition;
-    private Integer workflowIndex;
+    private String workflowIndex;
     
 	public String getUsername() {
         return username;
@@ -39,15 +39,15 @@ public class Workflow {
         this.workflowDefinition=workflowDefinition;
     }
 	
-	public Integer getWorkflowIndex() {
+	public String getWorkflowIndex() {
         return workflowIndex;
     }
 	
-	public void setWorkflowIndex(Integer workflowIndex) {
+	public void setWorkflowIndex(String workflowIndex) {
         this.workflowIndex=workflowIndex;
     }
 	
-    public Workflow(String username, String password, String workflowID, String workflowDefinition, Integer workflowIndex) {
+    public Workflow(String username, String password, String workflowID, String workflowDefinition, String workflowIndex) {
         this.username = username;
         this.password = password;
         this.workflowID = workflowID;
